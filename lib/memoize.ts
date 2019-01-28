@@ -1,6 +1,6 @@
 import { hash } from "@stembord/hash";
 
-const hashArgs = (args: any[]): number => {
+export const hashArgs = (args: any[]): number => {
   let hashed = 0;
 
   for (let i = 0, il = args.length; i < il; i++) {
@@ -12,7 +12,9 @@ const hashArgs = (args: any[]): number => {
 
 export type Procedure = (...args: any[]) => any;
 
-type Memoized<F> = F & { clearCache(...args: any[]): void };
+export type Memoized<F extends Procedure> = F & {
+  clearCache(...args: any[]): ReturnType<F> | { [key: string]: ReturnType<F> };
+};
 
 export const memoize = <F extends Procedure>(func: F): Memoized<F> => {
   let cache: { [key: string]: any } = {};
@@ -34,9 +36,15 @@ export const memoize = <F extends Procedure>(func: F): Memoized<F> => {
 
   memoized.clearCache = (...args: any[]) => {
     if (args.length === 0) {
+      const oldCache = cache;
       cache = {};
+      return oldCache;
     } else {
-      delete cache[hashArgs(args)];
+      const hashed = hashArgs(args),
+        value = cache[hashed];
+
+      delete cache[hashed];
+      return value;
     }
   };
 
