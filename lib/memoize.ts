@@ -1,4 +1,4 @@
-import { hash } from "@aicacia/hash";
+import { hash } from "@stembord/hash";
 
 export const hashArgs = (args: any[]): number => {
   let hashed = 0;

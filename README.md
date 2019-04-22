@@ -3,7 +3,7 @@
 memoize
 
 ```ts
-import { memoize } from "@aicacia/memoize";
+import { memoize } from "@stembord/memoize";
 
 const fac = memoize((x: number): number => (x === 0 ? 1 : x * fac(x - 1)));
 
