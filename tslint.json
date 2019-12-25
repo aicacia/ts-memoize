@@ -11,6 +11,8 @@
     "member-access": false,
     "no-this-assignment": false,
     "no-bitwise": false,
+    "max-classes-per-file": false,
+    "interface-name": false,
     "variable-name": [
       true,
       "allow-pascal-case",

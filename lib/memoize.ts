@@ -1,4 +1,4 @@
-import { hash } from "@stembord/hash";
+import { hash } from "@aicacia/hash";
 
 export const hashArgs = (args: any[]): number => {
   let hashed = 0;
@@ -13,11 +13,11 @@ export const hashArgs = (args: any[]): number => {
 export type Procedure = (...args: any[]) => any;
 
 export type Memoized<F extends Procedure> = F & {
-  clearCache(...args: any[]): ReturnType<F> | { [key: string]: ReturnType<F> };
+  clearCache(...args: any[]): ReturnType<F> | { [key: number]: ReturnType<F> };
 };
 
 export const memoize = <F extends Procedure>(func: F): Memoized<F> => {
-  let cache: { [key: string]: any } = {};
+  let cache: { [key: number]: any } = {};
 
   const memoized: Memoized<F> = function memoized<T>(
     this: T,

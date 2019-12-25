@@ -1,5 +1,5 @@
 import tape = require("tape");
-import { memoize } from "../lib";
+import { memoize } from ".";
 
 const fac = memoize((x: number): number => (x === 0 ? 1 : x * fac(x - 1)));
 

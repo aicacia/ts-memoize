@@ -1,10 +1,10 @@
 {
-  "name": "@stembord/memoize",
-  "version": "0.1.2",
+  "name": "@aicacia/memoize",
+  "version": "0.1.1",
   "description": "memoize",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/stembord/libs/ts-memoize.git"
+    "url": "https://gitlab.com/aicacia/libs/ts-memoize.git"
   },
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -12,12 +12,13 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run clean && npm run build",
-    "test": "ts-node node_modules/tape/bin/tape ./tests/**/*.test.ts | tap-spec",
+    "test": "ts-node node_modules/.bin/tape lib/**/*.test.{ts,tsx} | tap-spec",
+    "coverage": "nyc --reporter=lcov --check-coverage --lines=75 --require ts-node/register tape lib/**/*.test.{ts,tsx} | tap-spec; nyc report ---reporter=text",
     "clean": "rm -rf ./src",
-    "format.ts": "prettier-tslint fix '**/*.{ts,tsx}'",
-    "format.js": "prettier --write '**/*.{js,jsx,json}' --ignore-path .gitignore",
-    "format": "npm run format.ts && npm run format.js",
-    "lint": "tslint -c tslint.json 'lib/**/*.{ts,tsx}'"
+    "formatTS": "prettier-tslint fix '**/*.{ts,tsx}'",
+    "formatJS": "prettier --write '**/*.{js,jsx,json}' --ignore-path .gitignore",
+    "format": "npm run formatTS && npm run formatJS",
+    "lint": "tslint -c tslint.json 'lib/**/*.{ts,tsx}' -e 'lib/**/*.test.*'"
   },
   "keywords": [
     "memoize"
@@ -27,16 +28,30 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "@types/tape": "^4.2.33",
-    "prettier": "^1.17.0",
+    "nyc": "^14.1.1",
+    "prettier": "^1.19.1",
     "prettier-tslint": "^0.4.2",
     "tap-spec": "^5.0.0",
-    "tape": "^4.10.1",
-    "ts-node": "^8.1.0",
-    "tslint": "^5.16.0",
+    "tap-nyc": "^1.0.3",
+    "tape": "^4.11.0",
+    "ts-node": "^8.5.2",
+    "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.4.4"
+    "typescript": "^3.7.2"
   },
   "dependencies": {
-    "@stembord/hash": "^0.1.1"
+    "@aicacia/hash": "^0.1.2"
+  },
+  "nyc": {
+    "include": [
+      "lib/**/*"
+    ],
+    "exclude": [
+      "**/*.test.*"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ]
   }
 }
