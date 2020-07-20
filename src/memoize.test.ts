@@ -1,4 +1,4 @@
-import tape = require("tape");
+import * as tape from "tape";
 import { memoize } from ".";
 
 const fac = memoize((x: number): number => (x === 0 ? 1 : x * fac(x - 1)));
@@ -17,7 +17,7 @@ tape("memoize", (assert: tape.Test) => {
     3: 6,
     4: 24,
     5: 120,
-    6: 720
+    6: 720,
   });
 
   assert.equal(fac(10), 3628800);
