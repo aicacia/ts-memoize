@@ -1,1 +1,5 @@
-export { memoize, type MemorizedFunction } from "./memoize";
+export {
+	memoize,
+	type MemorizedFunction,
+	type MemorizeOptions,
+} from "./memoize";
