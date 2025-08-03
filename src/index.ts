@@ -1,1 +1,1 @@
-export { hashArgs, Procedure, Memoized, memoize } from "./memoize";
+export { memoize, type MemorizedFunction } from "./memoize";

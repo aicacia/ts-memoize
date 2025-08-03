@@ -1,6 +1,10 @@
-.nyc_output
-node_modules
-coverage
-lib
-docs
+.vscode/
+node_modules/
+coverage/
+docs/
+types/
+browser/
+cjs/
+esm/
+.nyc_output/
 npm-debug.log

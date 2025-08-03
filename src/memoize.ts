@@ -1,52 +1,58 @@
-import { hash } from "@aicacia/hash";
+import { hashOf } from "@aicacia/hash";
+import { ExpiringMap, type ExpiringMapOptions } from "@aicacia/expiring-map";
 
-export const hashArgs = (args: any[]): number => {
-  let hashed = 0;
+// biome-ignore lint/suspicious/noExplicitAny: allow it
+type Func = (...args: any[]) => any;
+type Key = string | number | symbol;
 
-  for (let i = 0, il = args.length; i < il; i++) {
-    hashed = (31 * hashed + hash(args[i])) | 0;
-  }
-
-  return hashed;
+export type MemorizedFunction<F extends Func, K extends Key = Key> = F & {
+	cache: Map<K, ReturnType<F>>;
+	invalidate(...args: Parameters<F>): void;
+	clear(): void;
 };
 
-export type Procedure = (...args: any[]) => any;
+export interface MemorizeOptions<F extends Func, K extends Key = Key> {
+	expiringMap?: ExpiringMapOptions<K, ReturnType<F>>;
+	keyResolver?: (...args: Parameters<F>) => K;
+}
 
-export type Memoized<F extends Procedure> = F & {
-  clearCache(...args: any[]): ReturnType<F> | { [key: number]: ReturnType<F> };
-};
+export function memoize<F extends Func, K extends Key = Key>(
+	fn: F,
+	options: MemorizeOptions<F, K> = {},
+): MemorizedFunction<F, K> {
+	const cache =
+		options.expiringMap != null
+			? new ExpiringMap<K, ReturnType<F>>(options.expiringMap)
+			: new Map<K, ReturnType<F>>();
+	const keyResolver = (options?.keyResolver ?? hashOf) as (
+		args: Parameters<F>,
+	) => K;
 
-export const memoize = <F extends Procedure>(func: F): Memoized<F> => {
-  let cache: { [key: number]: any } = {};
+	function memorizedFunction(this: unknown, ...args: Parameters<F>) {
+		const key = keyResolver(args);
+		let result: ReturnType<F>;
+		if (cache.has(key)) {
+			result = cache.get(key) as ReturnType<F>;
+		} else {
+			result = fn.apply(this, args);
+			// @ts-expect-error
+			if (result instanceof Promise) {
+				result.catch(() => {
+					cache.delete(key);
+				});
+			}
+			cache.set(key, result);
+		}
+		return result;
+	}
 
-  const memoized: Memoized<F> = function memoized<T>(
-    this: T,
-    ...args: any[]
-  ): any {
-    const key = hashArgs(args);
+	memorizedFunction.cache = cache;
+	memorizedFunction.invalidate = (...args: Parameters<F>) => {
+		cache.delete(keyResolver(args));
+	};
+	memorizedFunction.clear = () => {
+		cache.clear();
+	};
 
-    if (cache.hasOwnProperty(key)) {
-      return cache[key];
-    } else {
-      const result = func.apply(this, args);
-      cache[key] = result;
-      return result;
-    }
-  } as any;
-
-  memoized.clearCache = (...args: any[]) => {
-    if (args.length === 0) {
-      const oldCache = cache;
-      cache = {};
-      return oldCache;
-    } else {
-      const hashed = hashArgs(args),
-        value = cache[hashed];
-
-      delete cache[hashed];
-      return value;
-    }
-  };
-
-  return memoized;
-};
+	return memorizedFunction as MemorizedFunction<F, K>;
+}
