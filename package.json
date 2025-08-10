@@ -1,6 +1,6 @@
 {
 	"name": "@aicacia/memoize",
-	"version": "0.1.0",
+	"version": "0.1.5",
 	"description": "memoization utilities",
 	"repository": {
 		"type": "git",
@@ -26,10 +26,7 @@
 		"preCommit": "npm run format && npm run lint && npm run coverage",
 		"prepare": "husky"
 	},
-	"keywords": [
-		"memoize",
-		"lazy"
-	],
+	"keywords": ["memoize", "lazy"],
 	"author": "Nathan Faucett",
 	"license": "(MIT OR Apache-2.0)",
 	"readmeFilename": "README.md",
@@ -60,16 +57,8 @@
 		"@aicacia/hash": "0"
 	},
 	"nyc": {
-		"include": [
-			"src"
-		],
-		"exclude": [
-			"src/**/*.test.*",
-			"src/**/*.benchmark.*"
-		],
-		"extension": [
-			".ts",
-			".tsx"
-		]
+		"include": ["src"],
+		"exclude": ["src/**/*.test.*", "src/**/*.benchmark.*"],
+		"extension": [".ts", ".tsx"]
 	}
 }

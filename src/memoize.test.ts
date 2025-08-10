@@ -1,6 +1,18 @@
 import tape from "tape";
 import { memoize } from "./memoize";
 
+tape(
+	"memoize: should return the same name as the passed in function",
+	(assert) => {
+		function identity<T>(x: T) {
+			return x;
+		}
+		const memoized = memoize(identity);
+		assert.equal(memoized.name, identity.name);
+		assert.end();
+	},
+);
+
 tape("memoize: should return cached value for same args", (assert) => {
 	let callCount = 0;
 	const fn = (x: number) => {

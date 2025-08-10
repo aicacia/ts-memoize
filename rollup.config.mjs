@@ -26,7 +26,7 @@ export default [
 				transformMixedEsModules: true,
 			}),
 			typescript({
-				tsconfig: "./tsconfig.browser.json"
+				tsconfig: "./tsconfig.browser.json",
 			}),
 		],
 	},

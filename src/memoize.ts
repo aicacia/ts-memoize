@@ -53,6 +53,7 @@ export function memoize<F extends Func, K extends Key = Key>(
 	memorizedFunction.clear = () => {
 		cache.clear();
 	};
+	Object.defineProperty(memorizedFunction, "name", { value: fn.name });
 
 	return memorizedFunction as MemorizedFunction<F, K>;
 }
